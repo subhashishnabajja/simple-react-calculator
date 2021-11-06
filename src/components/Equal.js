@@ -1,26 +1,9 @@
 import { useCalc } from "../context/CalculatorContext";
 
 const Equal = (props) => {
-  const {
-    operandTwo,
-    operator,
-    operandOne,
-    setOperandOne,
-    setOperandTwo,
-    setOperator,
-    setOutput,
-  } = useCalc();
-  const handleClick = () => {
-    if (operandOne && operator && operandTwo)
-      setOutput((o) => {
-        setOperandOne(o.toString());
-        setOperator("");
-        setOperandTwo("");
-        return "";
-      });
-  };
+  const { getOutput } = useCalc();
   return (
-    <button onClick={handleClick} className="font-red">
+    <button onClick={() => getOutput()} className="font-red">
       =
     </button>
   );

@@ -1,22 +1,9 @@
 import { useCalc } from "../context/CalculatorContext";
 
 const Decimal = () => {
-  const { setOperandOne, setOperandTwo, operator } = useCalc();
-  const addDecimal = (state) => {
-    if (state.includes(".")) {
-      return state;
-    } else {
-      return state + ".";
-    }
-  };
-  const handleClick = () => {
-    if (operator !== "") {
-      setOperandTwo(addDecimal);
-    } else {
-      setOperandOne(addDecimal);
-    }
-  };
-  return <button onClick={handleClick}>.</button>;
+  const { addDecimal } = useCalc();
+
+  return <button onClick={() => addDecimal()}>.</button>;
 };
 
 export default Decimal;
