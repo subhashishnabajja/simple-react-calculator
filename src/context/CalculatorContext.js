@@ -7,18 +7,8 @@ const CalculatorProvider = (props) => {
   const [operandTwo, setOperandTwo] = React.useState("");
   const [operator, setOperator] = React.useState("");
   const [output, setOutput] = React.useState("");
-  const value = {
-    operandOne,
-    setOperandOne,
-    operandTwo,
-    setOperandTwo,
-    operator,
-    setOperator,
-    output,
-    setOutput,
-  };
 
-  React.useEffect(() => {
+  const calculate = () => {
     if (operandOne && operandTwo) {
       switch (operator) {
         case "+":
@@ -43,7 +33,114 @@ const CalculatorProvider = (props) => {
     } else {
       setOutput(operandOne);
     }
-  }, [operandOne, operandTwo, operator]);
+  };
+
+  const appendOperand = (num) => {
+    const getOperand = (state) => {
+      let newOperand = "";
+
+      if (state.length === 10) {
+        newOperand = state;
+      } else if (state.includes(".")) {
+        newOperand = state + num;
+      } else {
+        newOperand = parseFloat(state + num).toString();
+      }
+
+      return newOperand;
+    };
+    if (operator) {
+      setOperandTwo(getOperand);
+    } else {
+      setOperandOne(getOperand);
+    }
+  };
+
+  const addOperator = (op) => {
+    if (operator === "") {
+      setOperator(op);
+    } else {
+      setOperandOne(output.toString());
+      setOperator(op);
+      setOperandTwo("");
+      setOutput("");
+    }
+  };
+
+  const addDecimal = () => {
+    const decimalize = (state) => {
+      if (state.includes(".")) {
+        return state;
+      } else {
+        return state + ".";
+      }
+    };
+
+    if (operator !== "") {
+      setOperandTwo(decimalize);
+    } else {
+      setOperandOne(decimalize);
+    }
+  };
+
+  const getOutput = () => {
+    if (operandOne && operator && operandTwo)
+      setOutput((o) => {
+        setOperandOne(o.toString());
+        setOperator("");
+        setOperandTwo("");
+        return "";
+      });
+  };
+
+  const negateOperand = () => {
+    const negateNumber = (number) => {
+      if (!number.includes("-")) {
+        return `-${number}`;
+      } else {
+        return number.slice(1, number.length);
+      }
+    };
+    if (operator) {
+      setOperandTwo(negateNumber);
+    } else {
+      setOperandOne(negateNumber);
+    }
+  };
+
+  const clear = () => {
+    if (operator !== "" && operandTwo !== "") {
+      setOperandTwo((o) => o.slice(0, -1));
+    } else if (operator !== "") {
+      setOperator("");
+    } else if (operandOne !== "") {
+      setOperandOne((o) => {
+        const operand = o.slice(0, -1);
+        if (operand === "") {
+          return "0";
+        } else {
+          return operand;
+        }
+      });
+    }
+  };
+
+  const value = {
+    appendOperand,
+    addOperator,
+    getOutput,
+    addDecimal,
+    negateOperand,
+    clear,
+    operandOne,
+    operandTwo,
+    operator,
+    output,
+  };
+
+  React.useEffect(() => {
+    calculate();
+  }, [operandOne, operator, operandTwo]);
 
   return (
     <CalculatorContext.Provider value={value}>
